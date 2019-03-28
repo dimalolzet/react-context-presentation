@@ -1,0 +1,28 @@
+.intro {
+  background-color: #2c2c2c;
+}
+
+.intro .intro__title {
+  color: #dddddd;
+}
+
+.intro__image {
+  bottom: 0;
+  transform: none;
+  position: absolute;
+  left: 0;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.create-context__slowpoke {
+  position: absolute;
+  right: 30px;
+  bottom: 20px;
+  max-height: 70%;
+}
+
+.example-cover__image {
+  display: block;
+  max-width: 100%;
+}

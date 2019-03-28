@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Thinking in Context</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="shower/themes/ribbon/styles/styles.css">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/styles/default.min.css">
+  <style>
+    .shower {
+      --slide-ratio: calc(16 / 9);
+    }
+  </style>
+</head>
+
+<body class="shower list">
+
+<header class="caption">
+  <h1>Thinking in Context</h1>
+  <p>Dmitriy Kovalev</p>
+</header>
+
+<section class="slide intro">
+  <h2 class="intro__title">Thinking in Context</h2>
+  <img class="intro__image" src="pictures/react-context.png" alt="React Context">
+</section>
+
+<section class="slide create-context">
+  <h2>React.createContext</h2>
+  <ul>
+    <li>Context.Provider</li>
+    <li>Context.Consumer</li>
+    <li>Class.contextType</li>
+  </ul>
+
+  <img class="create-context__slowpoke" src="pictures/slowpoke.png" alt="React 16.3">
+</section>
+
+<section class="slide">
+  <h2>Main advantages</h2>
+  <ul>
+    <li>Passing data through the component tree without having to pass props down manually at every level</li>
+    <li>Establishing communication of components from different parts of application</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2>API</h2>
+  <pre>
+    <code>const { <mark>Provider</mark>, <mark>Consumer</mark> } = React.createContext(<mark>42</mark>)</code>
+  </pre>
+
+  <ul>
+    <li><code>Provider</code> – allows components to subscribe to context changes</li>
+    <li><code>Consumer</code> – component that subscribes to context changes</li>
+    <li><code>42</code> – default value of context</li>
+  </ul>
+</section>
+
+<section class="slide example-cover">
+  <h2>Show me the money</h2>
+  <img class="example-cover__image" src="pictures/layout.png" alt="Layout">
+</section>
+
+<section class="slide">
+  <h2>Prepare Context</h2>
+  <pre>
+    <code>const { Provider, Consumer } = React.createContext(false)</code>
+    <code>&#10240;</code>
+    <code>export {</code>
+    <code>  Provider as SidebarProvider,</code>
+    <code>  Consumer as SidebarConsumer,</code>
+    <code>}</code>
+  </pre>
+</section>
+
+<section class="slide">
+  <h2>Layout</h2>
+  <pre>
+    <code>&lt;Root&gt;</code>
+    <code class="mark">  &lt;SidebarProvider value={false}&gt;</code>
+    <code>    &lt;Sidebar /&gt;</code>
+    <code>    &lt;Content /&gt;</code>
+    <code class="mark">  &lt;/SidebarProvider&gt;</code>
+    <code>&lt;/Root&gt;</code>
+  </pre>
+</section>
+
+<section class="slide">
+  <h2>Sidebar</h2>
+  <pre>
+    <code class="mark">&lt;SidebarConsumer&gt;</code>
+    <code>  {<mark>isOpen</mark> => (</code>
+    <code>    &lt;ul style={{ width: <mark>isOpen</mark> ? '200px' : '50px' }}&gt;</code>
+    <code>      ... sidebar links</code>
+    <code>    &lt;/ul&gt;</code>
+    <code>  )}</code>
+    <code class="mark">&lt;/SidebarConsumer&gt;</code>
+  </pre>
+</section>
+
+<section class="slide">
+  <h2>Make provider clever</h2>
+  <pre>
+    <code>class SidebarProvider extends React.Component {</code>
+    <code>  state = { isOpen: false }</code>
+    <code>  toggleState = () => {</code>
+  <code>      this.setState(({ isOpen }) => ({ isOpen: !isOpen }))</code>
+    <code>  }</code>
+    <code>  render() { ... }</code>
+    <code>}</code>
+  </pre>
+</section>
+
+<section class="slide">
+  <h2>Provide toggle function</h2>
+  <pre>
+    <code>render() {</code>
+    <code>  return (</code>
+    <code>    &lt;Provider value={{ <mark>isOpen</mark>, toggle: <mark>this.toggleState</mark> }}&gt;</code>
+    <code>      {this.props.children}</code>
+    <code>    &lt;/Provider&gt;</code>
+    <code>  )</code>
+    <code>}</code>
+  </pre>
+</section>
+
+<section class="slide">
+  <h2>Meanwhile inside content</h2>
+  <pre>
+    <code>&lt;SidebarConsumer&gt;</code>
+    <code>  {({ isOpen, toggle }) => (</code>
+    <code>    &lt;button onClick={<mark>toggle</mark>}&gt;</code>
+    <code>      {<mark>isOpen</mark> ? 'Close' : 'Open'} sidebar</code>
+    <code>    &lt;/button&gt;</code>
+    <code>  )}</code>
+    <code>&lt;/SidebarConsumer&gt;</code>
+  </pre>
+</section>
+
+<section class="slide">
+  <div class="shout shrink">
+    <h2>
+      <a href="https://codesandbox.io/s/pm0zv5jq3x" target="_blank">Example demo on CodeSandbox</a>
+    </h2>
+  </div>
+</section>
+
+<section class="slide">
+  <h2>Some tips</h2>
+  <ul>
+    <li>You can use as many different nested providers as you want</li>
+    <li>You can use as many consumers as you want</li>
+  </ul>
+
+  <p>
+    <em>But be careful, avoid unnecessary re-renders of top-level components.</em>
+  </p>
+</section>
+
+<section class="slide">
+  <h2>Most common cases for context usage</h2>
+  <ol>
+    <li><strong>Components communication</strong> – share data or state between different parts of application</li>
+    <li class="next"><strong>UI themes</strong> – share theme such as colors and font sizes and update it in real-time</li>
+    <li class="next"><strong>i18n</strong> – use locale provider and real-time language switching</li>
+  </ol>
+</section>
+
+<section class="slide">
+  <h2>A few links, of course</h2>
+  <ul>
+    <li><a href="https://reactjs.org/docs/context.html" target="_blank">React Context documentation</a> – Official documentation</li>
+    <li><a href="https://css-tricks.com/digging-into-react-context/" target="_blank">Digging Into React Context</a> – CSS Tricks article</li>
+    <li><a href="https://frontarm.com/james-k-nelson/react-context-performance/" target="_blank">Avoiding unnecessary renders with React context</a> – About Context performance</li>
+    <li><a href="https://github.com/diegohaz/awesome-react-context" target="_blank">Awesome React Context</a> – Libraries using Context API</li>
+  </ul>
+</section>
+
+<section class="slide">
+  <h2 class="place">Thank you for attention!</h2>
+</section>
+
+<div class="progress"></div>
+
+<script src="shower/shower.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.4/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
